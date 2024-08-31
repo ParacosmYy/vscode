@@ -140,3 +140,53 @@ print(tripler(11))
 #lambda函数可以接受任意数量的参数，但只能有一个表达式。lambda函数用于创建匿名函数，即没有名字的函数。
 #lambda函数可以接受任意数量的参数，但只能有一个表达式。lambda函数用于创建匿名函数，即没有名字的函数。
 
+stack=[]
+stack.append('a')
+stack.append('b')
+stack.append('c')
+print(stack)
+print(stack.pop())
+print(stack)
+print(stack.pop())
+print(stack)
+print(stack.pop())
+print(stack)
+
+print(len(stack)==0)
+
+class Queue:
+    def __init__(self) :
+        self.queue=[]
+    def enqueue(self,item):
+        self.queue.append(item)
+    def dequeue(self):
+        if not self.is_empty():
+            return self.queue.pop(0)
+        else:
+            raise IndexError("dequeue from empty queue")
+    def peek(self):
+        if not self.is_empty():
+            return self.queue[0]
+        else:
+            raise IndexError("peek from empty queue")
+    def is_empty(self):
+        return len(self.queue)==0
+    def size(self):
+        return len(self.queue)
+queue=Queue()
+queue.enqueue('a')
+queue.enqueue('b')
+queue.enqueue('c')
+
+print(queue.peek())
+print(queue.size())
+print(queue.dequeue())
+print(queue.size())
+print(queue.is_empty())
+#队列是一种先进先出（FIFO）的数据结构，它支持两种基本操作：入队（enqueue）和出队（dequeue）。入队操作将元素添加到队列的末尾，而出队操作将队列的第一个元素移除并返回。队列通常用于实现任务调度、缓冲区管理等功能。
+
+t=12345,45123,"hello"
+u=t,"nihao"
+print(u)
+
+print(u)
