@@ -1,191 +1,121 @@
-//#include <stdio.h>
-//#include <string.h>
-//int compareReturn(char str1) {
-//    if (str1 == '#') {
-//        return 0;
-//    } else if (str1 == '+' || str1 == '-') {
-//        return 1;
-//    } else if (str1 == '*' || str1 == '/') {
-//        return 2;
-//    } else {
-//        printf("输入了无效符号");
-//        return -1;
-//    }
-//}
-//int jisuan(int x, char str1, int y) {
-//    int ans = 0;
-//    if (str1 == '+') {
-//        ans = x + y;
-//    } else if (str1 == '-') {
-//        ans = x - y;
-//    } else if (str1 == '*') {
-//        ans = x * y;
-//    } else if (str1 == '/') {
-//        ans = x / y;
-//    } else {
-//        ;
-//    }
-//    return ans;
-//}
-//int main(int argc, const char * argv[]) {
-//    // 初始化两个栈
-//    // 第一个栈为数字栈
-//    // 第二个栈为符号栈
-//    int firstStack [100] = {0};
-//    int firstTop = -1;
-//    char secondStack [100] = {'#'};
-////    printf("%c", secondStack[0]);
-//    int secondTop = 0;
-//    char str[100];
-//    int flag = -1;
-////    printf("请输入待计算的算术表达式:\n");
-//    scanf("%s", str);
-//    // 表达式长度
-//    int x = 0;
-//    int length = (int)strlen(str);
-//    for (int i = 0; i < length;) {
-//        if (str[i] >= '0' && str[i] <= '9') {
-//            x *= 10;
-//            x += str[i++] - '0';
-//            flag=1;
-//        } else {
-//            if(flag==1)
-//            {
-//            firstStack[++firstTop] = x;
-//            x = 0;
-//            flag=-1;
-//            }
-//            if (compareReturn(secondStack[secondTop]) < compareReturn(str[i])) {
-//                secondStack[++secondTop] = str[i++];
-//            } else {
-//                int b = firstStack[firstTop--];
-//                int a = firstStack[firstTop--];
-//                firstStack[++firstTop] = jisuan(a, secondStack[secondTop], b);
-//                secondTop--;
-//                if (str[i] == '#' && secondTop == 0) {
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//    printf("%d", firstStack[firstTop]);
-//}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#define maxsize 100 // 栈的最大长度
 
-#include <stdio.h>  
-#include <string.h>  
-#include <stdlib.h>  
-  
-// 函数声明  
-int compareReturn(char str1);  
-int jisuan(int x, char str1, int y);  
-void evaluateExpression(const char* str);  
-  
-int main() {  
-    char str[100];  
-    printf("请输入待计算的算术表达式（支持+,-,*,/,()）：\n");  
-    scanf("%s", str);  
-    evaluateExpression(str);  
-    return 0;  
-}  
-  
-int compareReturn(char str1) {  
-    if (str1 == '#') {  
-        return 0;  
-    } else if (str1 == '(') {  
-        // 左括号，不比较优先级，仅作为标记  
-        return -1;  
-    } else if (str1 == '+' || str1 == '-') {  
-        return 1;  
-    } else if (str1 == '*' || str1 == '/') {  
-        return 2;  
-    } else if (str1 == ')') {  
-        // 右括号，用于结束括号内的计算  
-        return 3;  
-    } else {  
-        printf("输入了无效符号: %c\n", str1);  
-        exit(EXIT_FAILURE);  
+typedef struct calculate { // 定义栈
+    char data[maxsize]; // 栈的元素
+    int top; // 栈顶指针
+} stack;
+
+void initstack(stack *s) { // 初始化栈
+    s->top = -1;
+}
+
+void push(stack *s, char c) { // 入栈
+    if (s->top == maxsize - 1) {
+        printf("栈满\n");
+    } else {
+        s->data[++(s->top)] = c;
+    }
+}
+
+char pop(stack *s) { // 出栈
+    if (s->top == -1) {
+        printf("栈空\n");
+        return '\0';
+    } else {
+        return s->data[(s->top)--];
+    }
+}
+
+char gettop(stack *s) { // 取栈顶元素
+    if (s->top == -1) {
+        printf("栈空\n");
+        return '\0';
+    } else {
+        return s->data[s->top];
+    }
+}
+
+int isempty(stack *s) { // 判断栈是否为空
+    return s->top == -1;
+}
+
+int getpriority(char c) { // 获取运算符的优先级
+    switch (c) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        default:
+            return 0;
+    }
+}
+
+char *transform(char *str) {  
+    stack value; // 存放操作数栈区
+    stack oper;  // 存放运算符栈区  
+    initstack(&value);  
+    initstack(&oper);  
+    char *postfix = (char*)malloc(maxsize * sizeof(char)); // 存放后缀表达式  
+    int i = 0, j = 0;  
+    if (!postfix) {  
+        printf("内存分配失败\n");  
+        exit(1); // 检查内存分配是否成功  
     }  
-}  
   
-int jisuan(int x, char str1, int y) {  
-    int ans = 0;  
-    if (str1 == '+') {  
-        ans = x + y;  
-    } else if (str1 == '-') {  
-        ans = x - y;  
-    } else if (str1 == '*') {  
-        ans = x * y;  
-    } else if (str1 == '/') {  
-        if (y == 0) {  
-            printf("错误：除以零\n");  
-            exit(EXIT_FAILURE);  
-        }  
-        ans = x / y;  
-    }  
-    return ans;  
-}  
-  
-void evaluateExpression(const char* str) {  
-    // 初始化两个栈  
-    int firstStack[100] = {0};  
-    int firstTop = -1;  
-    char secondStack[100] = {'#'};  
-    int secondTop = 0;  
-    int x = 0;  
-    int length = strlen(str);  
-    int i = 0;  
-  
-    while (i < length) {  
-        if (str[i] >= '0' && str[i] <= '9') {  
-            x *= 10;  
-            x += str[i++] - '0';  
-        } else {  
-            if ((str[i] >= '0' && str[i] <= '9') == 0 && x != 0) {  
-                firstStack[++firstTop] = x;  
-                x = 0;  
+    while (str[i] != '\0') {  
+        if (str[i] == ' ') { // 如果当前字符是空格，则跳过  
+            i++;  
+        } else if (str[i] >= '0' && str[i] <= '9') { // 如果当前字符是数字，则数字入栈
+            while (str[i] >= '0' && str[i] <= '9') {  
+                postfix[j++] = str[i++];  
             }  
-  
-            if (str[i] == '(') {  
-                // 遇到左括号，压入符号栈（这里简化为不压，但记录一个“进入括号”的状态）  
-                secondStack[++secondTop] = str[i++];  
-            } else if (str[i] == ')') {  
-                // 遇到右括号，计算括号内的表达式  
-                while (secondTop > 0 && secondStack[secondTop] != '(') {  
-                    int b = firstStack[firstTop--];  
-                    int a = firstStack[firstTop--];  
-                    char op = secondStack[secondTop--];  
-                    firstStack[++firstTop] = jisuan(a, op, b);  
-                }  
-                // 弹出左括号  
-                secondTop--;  
-                i++;  
-            } else {  
-                // 处理运算符  
-                while (secondTop > 0 && compareReturn(secondStack[secondTop]) >= compareReturn(str[i])) {  
-                    int b = firstStack[firstTop--];  
-                    int a = firstStack[firstTop--];  
-                    char op = secondStack[secondTop--];  
-                    firstStack[++firstTop] = jisuan(a, op, b);  
-                }  
-                secondStack[++secondTop] = str[i++];  
+            postfix[j++] = ' '; // 数字之间用空格隔开（为了后续解析方便）  
+            postfix[j] = '\0'; // 临时添加字符串结束符以检查（稍后会被覆盖）  
+            j--; // 移除刚才添加的字符串结束符  
+        } else if (str[i] == '(') { // 如果当前字符是左括号，则入栈  
+            push(&oper, str[i++]);  
+        } else if (str[i] == ')') { // 如果当前字符是右括号，则出栈直到遇到左括号  
+            while (!isempty(&oper) && gettop(&oper) != '(') {  
+                postfix[j++] = pop(&oper);  
+                postfix[j++] = ' ';  
             }  
+            if (!isempty(&oper) && gettop(&oper) == '(') {  
+                pop(&oper); // 弹出左括号，但不添加到后缀表达式  
+            }  
+            i++; // 更新索引以跳过右括号  
+        } else { // 如果当前字符是运算符  
+            char topOper = '\0';  
+            while (!isempty(&oper) && (topOper = gettop(&oper)) != '\0' && getpriority(topOper) >= getpriority(str[i]))/* 从运算符栈oper中弹出所有优先级高于或等于当前遇到的新运算符的运算符，并将它们追加到后缀表达式中。 */
+            {  
+                postfix[j++] = pop(&oper);  
+                postfix[j++] = ' ';  
+            }  
+            push(&oper, str[i++]);  
         }  
     }  
   
-    // 如果还有数字在栈中，说明是最后一个数字（没有后续运算符）  
-    if (x != 0) {  
-        firstStack[++firstTop] = x;  
+    // 将输入的表达式遍历完毕后，将剩余的运算符从运算符栈中弹出  
+    while (!isempty(&oper)) {  
+        postfix[j++] = pop(&oper);  
+        postfix[j++] = ' ';  
     }  
   
-    // 弹出所有剩余的运算符并计算结果  
-    while (secondTop > 0) {  
-        int b = firstStack[firstTop--];  
-        int a = firstStack[firstTop--];  
-        char op = secondStack[secondTop--];  
-        firstStack[++firstTop] = jisuan(a, op, b);  
-    }  
+    postfix[j] = '\0'; // 在字符串末尾添加结束符  
   
-    // 输出最终结果  
-    printf("%d\n", firstStack[firstTop]);  
+    return postfix;  
+}
+
+int main() {
+    char infix[] = "101 + 2 * (3 + 4) * 5 - 1 / 2";
+    char *postfix;
+    postfix = transform(infix);
+    printf("后缀表达式: %s\n", postfix);
+    free(postfix); // 释放分配的内存
+    return 0;
 }
