@@ -189,3 +189,49 @@ u=t,"nihao"
 print(u)
 
 print(u)
+
+s='hello python!'
+str(s)
+
+h='ptr'
+repr(h)#转化为字符串
+print(repr(h))
+str(1/7)#转化为字符串
+print(123)
+
+for x in range(1,10):
+    print(repr(x).rjust(2),repr(x*x).rjust(3),end='')
+    print(repr(x*x*x).rjust(4))
+#rjust 方法将字符串右对齐，并使用指定的字符填充左侧，使其达到指定的宽度。end参数用于指定在每次循环结束后打印的字符，默认为换行符。
+print('12'.zfill(5))
+#zfill 左边填充数字
+print('12'.rjust(5))
+
+print('{}网址是： “{}！”'.format('菜鸟', 'www.runoob.com'))#括号及其里面的字符 (称作格式化字段) 将会被 format() 中的参数替换。
+
+print('{1} 和 {0}'.format('Google', 'Runoob'))
+#字符串替换 按照前面大括号里面的顺序
+
+print('{0},{1},{other}'.format('google','baidu',other='taobao'))
+#other  关键字参数可用于替换
+
+import math
+print('常量PI的值近似为:{!r}'.format(math.pi))
+
+print('常量 PI 的值近似为 {0:.3f}。'.format(math.pi))
+#占位符和格式符 用 ： 分开 ：后面是格式符 .3f 表示小数点后三位 前面的‘0’ 表示第一个format参数
+
+table = {'Google': 1, 'Runoob': 2, 'Taobao': 3}
+for name, number in table.items():
+     print('{0:10} ==> {1:10d}'.format(name, number)) 
+#格式化字符串的输出
+
+#!/usr/bin/python3
+
+# 打开一个文件
+f = open("E:\vscode\test.txt", "w")
+
+f.write( "Python 是一个非常好的语言。\n是的,的确非常好!!\n" )
+
+# 关闭打开的文件
+f.close()
