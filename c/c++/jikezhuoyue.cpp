@@ -85,23 +85,124 @@ int main()
 	return 0;
 }*/
 
-#include <stdio.h>
+// #include <stdio.h>
 
-int main()
-{
-					int i;
-					int a[5] = {1,2,3,4,5};
+// int main()
+// {
+// 					int i;
+// 					int a[5] = {1,2,3,4,5};
 
-					for(int i = 0;i <= 7; ++i){
-						a[i] = 0;
-						printf("6");
-					}
+// 					for(int i = 0;i <= 7; ++i){
+// 						a[i] = 0;
+// 						printf("6");
+// 					}
 
-					return 0;
+// 					return 0;
+// }
+
+
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <ctype.h>  
+#include <stdbool.h>  
+  
+#define MAX_STACK_SIZE 100  
+  
+typedef struct {  
+    double data[MAX_STACK_SIZE];  
+    int top;  
+} Stack;  
+  
+void initStack(Stack *s) {  
+    s->top = -1;  
+}  
+  
+bool push(Stack *s, double value) {  
+    if (s->top >= MAX_STACK_SIZE - 1) {  
+        return false; // 栈满  
+    }  
+    s->data[++(s->top)] = value;  
+    return true;  
+}  
+  
+double pop(Stack *s) {  
+    if (s->top < 0) {  
+        exit(1); // 栈空  
+    }  
+    return s->data[(s->top)--];  
+}  
+  
+bool isEmpty(Stack *s) {  
+    return s->top < 0;  
+}  
+  
+int charToDigit(char c) {  
+    return c - '0';  
+}  
+  
+double applyOperator(double a, double b, char op) {  
+    switch (op) {  
+        case '+': return a + b;  
+        case '-': return a - b;  
+        case '*': return a * b;  
+        case '/':  
+            if (b != 0) return a / b;  
+            else {  
+                printf("除数不能为0\n");  
+                exit(1);  
+            }  
+        case '%':  
+            if (b != 0) return (double)((int)a % (int)b); // 强制转换为int进行取余，然后转换回double  
+            else {  
+                printf("取余的除数不能为0\n");  
+                exit(1);  
+            }  
+        default: return 0; // 不应该发生  
+    }  
+}  
+  
+double calculate(char *postfix) {  
+    Stack valueStack;  
+    initStack(&valueStack);  
+  
+    int i = 0;  
+    while (postfix[i] != '\0') {  
+        if (isspace(postfix[i])) {  
+            i++;  
+            continue;  
+        }  
+  
+        if (isdigit(postfix[i])) {  
+            double num = 0;  
+            while (isdigit(postfix[i])) {  
+                num = num * 10 + charToDigit(postfix[i]);  
+                i++;  
+            }  
+            i--; // 因为while循环会多走一步，所以这里要减回来  
+            push(&valueStack, num);  
+        } else {  
+            double b = pop(&valueStack);  
+            double a = pop(&valueStack);  
+            double result = applyOperator(a, b, postfix[i]);  
+            push(&valueStack, result);  
+            i++;  
+        }  
+    }  
+  
+    if (!isEmpty(&valueStack)) {  
+        return pop(&valueStack);  
+    } else {  
+        printf("栈为空，无法计算结果\n");  
+        exit(1);  
+    }  
+}  
+  
+int main() {  
+    char postfix[] = "34 56 + 2 * 78 90 -";  
+    printf("后缀表达式: %s\n", postfix);  
+    double result = calculate(postfix);  
+    printf("结果: %lf\n", result);  
+    return 0;  
 }
 
 
-
-
-
-void swap(int )
