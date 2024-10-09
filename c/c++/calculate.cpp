@@ -8,7 +8,6 @@
 typedef struct calculate { // 定义栈
     char data[maxsize]; // 栈的元素
     int top; // 栈顶指针
-    char str[maxsize];//存放double类型的小数
 } stack;
 
 void initstack(stack *s) { // 初始化栈

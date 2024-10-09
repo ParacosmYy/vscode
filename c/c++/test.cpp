@@ -241,6 +241,111 @@ bool bracketcheck (char str[],int length)
     }
     return isempty(&q);
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//队列开头
+int a[10]; //定义一个数组
+//循环队列
+typedef struct
+{
+    int data[maxsize];
+    int front;
+    int rear;
+}sqqueue;
+//初始化队列
+void initqueue(sqqueue *q)
+{
+    q->front=q->rear=0;
+}
+//求队列长度
+int queue_length(sqqueue q)
+{
+    return (q.rear+maxsize-q.front);
+}
+//入队
+bool enqueue(sqqueue *q,int value)
+{
+    if((q->rear+1)%maxsize==q->front)
+    {
+        printf("队列已满");
+        return false;
+    }
+    else 
+    {
+        q->data[q->rear]=value;
+        q->rear=(q->rear+1)%maxsize;
+        return true;
+    }
+}
+//出队
+bool dequeue(sqqueue *q,int *value)
+{
+    if(q->rear==q->front)
+    {
+        printf("队列为空");
+        return false;
+    }
+    else 
+    {
+        *value=q->data[q->front];
+        q->front=(q->front+1)%maxsize;
+        printf("出队元素为 %d\n",*value);
+        return true;
+    }
+}
+//链式存储
+typedef struct Qnode
+{
+    int data;
+    struct Qnode *next;
+}Qnode, *qnode_ptr
+
+typedef struct
+{
+    qnode_ptr front;
+    qnode_ptr rear;
+}linkqueue;
+//初始化队列
+void initqueue(linkqueue *q)
+{
+    q->front=q->rear=(qnode_ptr)malloc(sizeof(Qnode));
+    q->front->next=NULL;
+}
+//入队
+bool enqueue(linkqueue *q,int value)
+{
+    qnode_ptr p;
+    p=(qnode_ptr)malloc(sizeof(Qnode));
+    if(!p)
+    {
+        printf("内存分配失败");
+    }
+    p->data=value;
+    p->next=NULL;
+    q->rear->next=p;
+    q->rear=p;
+    return true;
+}
+//出队
+bool dequeue(linkqueue *q,int *value)
+{
+    qnode_ptr p;//定义一个指针
+    if(q->front==q->rear)
+    {
+        printf("队列为空");
+        return false;
+    }
+    p=q->front->next;
+    *value=p->data;
+    q->front->next=p->next;//将队头指针指向下一个元素
+    if(q->rear==p)
+    {
+        q->rear=q->front;
+    }
+    free(p);
+    return true;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int main()
 {
     return 0;
